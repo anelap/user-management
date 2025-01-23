@@ -1,4 +1,5 @@
 import { Button, Container, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { createUser, getUser, updateUser } from "../api/users.api";
 
@@ -6,7 +7,6 @@ import Grid from "@mui/material/Grid2";
 import { User } from "../types/user.types";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { userSchema } from "../utils/userSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,14 +19,14 @@ interface UserFormProps {
   phoneNumber: string;
 }
 
-type LabFormValues = {
+type UserFormValues = {
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber: string;
 };
 
-const defaultLabFormValues: LabFormValues = {
+const defaultUserFormValues: UserFormValues = {
   firstName: "",
   lastName: "",
   email: "",
@@ -38,12 +38,13 @@ const UserForm = () => {
   const { id } = useParams<{ id?: string }>();
 
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<UserFormProps>({
     resolver: yupResolver(userSchema),
+    defaultValues: defaultUserFormValues,
   });
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const UserForm = () => {
           toast.error("Failed to fetch user data");
         });
     } else {
-      reset(defaultLabFormValues);
+      reset(defaultUserFormValues);
     }
   }, [id, reset]);
 
@@ -79,37 +80,61 @@ const UserForm = () => {
   return (
     <Container style={{ width: 600 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          label="First Name"
-          {...register("firstName")}
-          fullWidth
-          margin="normal"
-          error={!!errors.firstName}
-          helperText={errors.firstName?.message}
+        <Controller
+          name="firstName"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="First Name"
+              fullWidth
+              margin="normal"
+              error={!!errors.firstName}
+              helperText={errors.firstName?.message}
+            />
+          )}
         />
-        <TextField
-          label="Last Name"
-          {...register("lastName")}
-          fullWidth
-          margin="normal"
-          error={!!errors.lastName}
-          helperText={errors.lastName?.message}
+        <Controller
+          name="lastName"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Last Name"
+              fullWidth
+              margin="normal"
+              error={!!errors.lastName}
+              helperText={errors.lastName?.message}
+            />
+          )}
         />
-        <TextField
-          label="Email"
-          {...register("email")}
-          fullWidth
-          margin="normal"
-          error={!!errors.email}
-          helperText={errors.email?.message}
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Email"
+              fullWidth
+              margin="normal"
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          )}
         />
-        <TextField
-          label="Phone Number"
-          {...register("phoneNumber")}
-          fullWidth
-          margin="normal"
-          error={!!errors.phoneNumber}
-          helperText={errors.phoneNumber?.message}
+        <Controller
+          name="phoneNumber"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Phone Number"
+              fullWidth
+              margin="normal"
+              error={!!errors.phoneNumber}
+              helperText={errors.phoneNumber?.message}
+            />
+          )}
         />
         <Grid container spacing={2}>
           <Grid size={6}>
