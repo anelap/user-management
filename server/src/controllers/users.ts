@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import { users } from "../types/user.types";
 import { v4 as uuid } from "uuid";
 
+const USER_NOT_FOUND = "User not found";
+
 export const getUsers = (req: Request, res: Response) => {
   const { query } = req.query as { query?: string };
 
@@ -36,7 +38,7 @@ export const getUser = (req: Request, res: Response) => {
   if (user) {
     res.send(user);
   } else {
-    res.status(404).send("User not found");
+    res.status(404).send(USER_NOT_FOUND);
   }
 };
 
@@ -44,7 +46,7 @@ export const updateUser = (req: Request, res: Response) => {
   const index = users.findIndex((u) => u._id === req.params._id);
 
   if (index === -1) {
-    res.status(404).send("User not found");
+    res.status(404).send(USER_NOT_FOUND);
   }
 
   users[index] = {
@@ -62,7 +64,7 @@ export const deleteUser = (req: Request, res: Response) => {
   const index = users.findIndex((u) => u._id === req.params._id);
 
   if (index === -1) {
-    res.status(404).send("User not found");
+    res.status(404).send(USER_NOT_FOUND);
   } else {
     users.splice(index, 1);
     res.status(200).send({ message: "User successfully deleted" });

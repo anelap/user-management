@@ -10,12 +10,11 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import { deleteUser, getUsers } from "../api/users.api";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { User } from "../types/user.types";
-import { apiUrl } from "../appConfig";
-import axios from "axios";
 import { styled } from "@mui/system";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -37,20 +36,8 @@ function UsersContainer() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        let response;
-        if (searchQuery.length >= 3) {
-          const encodedQuery = encodeURIComponent(searchQuery);
-          response = await axios.get<User[]>(`${apiUrl}/users`, {
-            params: {
-              query: encodedQuery,
-            },
-          });
-        } else {
-          response = await axios.get<User[]>(`${apiUrl}/users`);
-        }
-        if (response.status === 200) {
-          setUsers(response.data);
-        }
+        const data = await getUsers(searchQuery);
+        setUsers(data);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -82,11 +69,9 @@ function UsersContainer() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await axios.delete(`${apiUrl}/user/${id}`);
-      if (response.status === 200) {
-        toast.success("User deleted successfully!");
-        setUsers(users.filter((user) => user._id !== id));
-      }
+      await deleteUser(id);
+      toast.success("User deleted successfully!");
+      setUsers(users.filter((user) => user._id !== id));
     } catch (error) {
       console.error("Error deleting user", error);
       toast.error("Error deleting user");

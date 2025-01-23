@@ -1,28 +1,15 @@
-import { Button, Container, Paper, TextField } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { createUser, getUser, updateUser } from "../api/users.api";
 
 import Grid from "@mui/material/Grid2";
 import { User } from "../types/user.types";
-import { apiUrl } from "../appConfig";
-import axios from "axios";
-import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { userSchema } from "../utils/userSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-  ...theme.applyStyles("dark", {
-    backgroundColor: "#1A2027",
-  }),
-}));
 
 interface UserFormProps {
   _id?: string;
@@ -59,36 +46,6 @@ const UserForm = () => {
     resolver: yupResolver(userSchema),
   });
 
-  const getUser = async (id: string) => {
-    try {
-      const response = await axios.get(`${apiUrl}/user/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error("Failed to fetch user data", error);
-      toast.error("Failed to fetch user data");
-    }
-  };
-
-  const updateUser = async (id: string, userData: UserFormProps) => {
-    try {
-      const response = await axios.put(`${apiUrl}/user/${id}`, userData);
-      return response.data;
-    } catch (error) {
-      console.error("Failed to update user", error);
-      toast.error("Failed to update user");
-    }
-  };
-
-  const createUser = async (userData: UserFormProps) => {
-    try {
-      const response = await axios.post(`${apiUrl}/user`, userData);
-      return response.data;
-    } catch (error) {
-      console.error("Failed to delete user", error);
-      toast.error("Failed to delete user");
-    }
-  };
-
   useEffect(() => {
     if (id) {
       getUser(id)
@@ -120,7 +77,7 @@ const UserForm = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ width: 600 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label="First Name"
@@ -156,28 +113,24 @@ const UserForm = () => {
         />
         <Grid container spacing={2}>
           <Grid size={6}>
-            <Item>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                disabled={isSubmitting}>
-                {id ? "Update" : "Create"}
-              </Button>
-            </Item>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={isSubmitting}>
+              {id ? "Update" : "Create"}
+            </Button>
           </Grid>
           <Grid size={6}>
-            <Item>
-              <Button
-                variant="contained"
-                color="secondary"
-                to="/"
-                component={Link}
-                fullWidth>
-                Cancel
-              </Button>
-            </Item>
+            <Button
+              variant="contained"
+              color="secondary"
+              to="/"
+              component={Link}
+              fullWidth>
+              Cancel
+            </Button>
           </Grid>
         </Grid>
       </form>

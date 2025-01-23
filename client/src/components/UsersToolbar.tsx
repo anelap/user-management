@@ -13,7 +13,7 @@ const UsersToolbar = () => {
 
   return (
     <div>
-      <Paper style={{ backgroundColor: "#d7d7d7" }}>
+      <Paper style={{ backgroundColor: "#dadeff" }}>
         <Toolbar>
           <Box
             sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-start" }}>
@@ -25,11 +25,7 @@ const UsersToolbar = () => {
               onChange={handleSearchChange}
             />
           </Box>
-          <Button
-            variant="text"
-            sx={{ marginLeft: "auto" }}
-            to="/add"
-            component={Link}>
+          <Button to="/add" component={Link}>
             Create User
           </Button>
         </Toolbar>
