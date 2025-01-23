@@ -7,10 +7,8 @@ import {
 } from "../controllers/users";
 
 import { Router } from "express";
-import { User } from "../types/user.types";
 
 const router = Router();
-let tasks: User[] = [];
 
 router.get("/users", getUsers);
 router.post("/user", createUser);

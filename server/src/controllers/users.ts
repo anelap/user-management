@@ -4,42 +4,23 @@ import { users } from "../types/user.types";
 import { v4 as uuid } from "uuid";
 
 export const getUsers = (req: Request, res: Response) => {
-  try {
-    const { firstName, lastName, email, phoneNumber } = req.query;
+  const { query } = req.query as { query?: string };
 
-    let filteredUsers = users;
+  let filteredUsers = users;
 
-    if (firstName) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.firstName
-          .toLowerCase()
-          .includes((firstName as string).toLowerCase())
-      );
-    }
-
-    if (lastName) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.lastName.toLowerCase().includes((lastName as string).toLowerCase())
-      );
-    }
-
-    if (email) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.email.toLowerCase().includes((email as string).toLowerCase())
-      );
-    }
-
-    if (phoneNumber) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.phoneNumber
-          .toLowerCase()
-          .includes((phoneNumber as string).toLowerCase())
-      );
-    }
-    res.send(filteredUsers);
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+  if (query) {
+    const decodedQuery = decodeURIComponent(query).toLowerCase();
+    filteredUsers = filteredUsers.filter(
+      (user) =>
+        `${user.firstName.toLowerCase()} ${user.lastName.toLowerCase()}`.includes(
+          decodedQuery
+        ) ||
+        user.email.toLowerCase().includes(decodedQuery) ||
+        user.phoneNumber.includes(decodedQuery)
+    );
   }
+
+  res.json(filteredUsers);
 };
 
 export const createUser = (req: Request, res: Response) => {
